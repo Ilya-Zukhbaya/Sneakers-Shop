@@ -1,12 +1,19 @@
 body {
+  font-family: system-ui;
   margin: 0;
-font-family: system-ui;
+  background-color: #E7F6FF;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  h1{
-    color: darkblue;
+.wrapper {
+  margin: 50px auto;
+  max-width: 1080px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  .header-logo-image{
+    width: 40px;
+    border-radius: 20px;
   }
 }
