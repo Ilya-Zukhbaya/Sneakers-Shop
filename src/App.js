@@ -1,8 +1,8 @@
 function App() {
   return (
     <div className="wrapper">
-      <header>
-        <div className="header-left">
+      <header className="d-flex justify-between">
+        <div className="header-left d-flex align-center">
           <img src="/images/myAvatar.png" alt='ShopLogo' className="header-logo-image" />
           <div className="header-left-info">
             <h2>Super Sneakers</h2>
