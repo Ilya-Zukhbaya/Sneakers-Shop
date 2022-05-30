@@ -1,3 +1,4 @@
+import React from 'react'
 import Card from './components/Card'
 import Header from './components/Header';
 import Drawer from './components/Drawer';
@@ -45,10 +46,11 @@ function App() {
           {
             cardArray.map((obj) =>
               <Card
-                description = {obj.description}
-                price = {obj.price}
-                imageUrl = {obj.imageUrl}
-                onClick={() => console.log(obj)}
+                description={obj.description}
+                price={obj.price}
+                imageUrl={obj.imageUrl}
+                addToFavorite={() => console.log(obj)}
+                addToCart={() => console.log(obj)}
               />
             )
           }
