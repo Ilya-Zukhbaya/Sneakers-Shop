@@ -3,36 +3,25 @@ import Card from './components/Card'
 import Header from './components/Header';
 import Drawer from './components/Drawer';
 
-const cardArray = [
-  {
-    description: 'Мужские Кроссовки Nike Blazer Mid Suede',
-    price: 12999,
-    imageUrl: '/images/sneakers/image 1.jpg'
-  },
-  {
-    description: 'Мужские Кроссовки Nike Air Max 270',
-    price: 12999,
-    imageUrl: '/images/sneakers/image 3.jpg'
-  },
-  {
-    description: 'Мужские Кроссовки Nike Blazer Mid Suede',
-    price: 8499,
-    imageUrl: '/images/sneakers/image 2.jpg'
-  },
-  {
-    description: 'Кроссовки Puma X Aka Boku Future Rider',
-    price: 8999,
-    imageUrl: '/images/sneakers/image 4.jpg'
-  }
-]
 
 function App() {
+  const [items, setItems] = React.useState([])
+  const [cartOpened, setCartOpened] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch('https://62977d3a14e756fe3b3153c8.mockapi.io/items')
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {setItems(json)})
+  }, [])
   return (
     <div className="wrapper clear">
 
-      <Drawer />
+      {cartOpened && <Drawer onCartClose={() => setCartOpened(false)} />}
+      {/* if Left - true then right must be completed */}
 
-      <Header />
+      <Header onCartClick={() => setCartOpened(true)} />
 
       <div className="main-content p-40">
         <div className="d-flex align-center justify-between mb-40">
@@ -42,15 +31,13 @@ function App() {
             <input placeholder="Search ..."></input>
           </div>
         </div>
-        <article className="sneakers-container d-flex">
+        <article className="sneakers-container d-flex flex-wrap justify-between">
           {
-            cardArray.map((obj) =>
+            items.map((obj) =>
               <Card
                 description={obj.description}
                 price={obj.price}
                 imageUrl={obj.imageUrl}
-                addToFavorite={() => console.log(obj)}
-                addToCart={() => console.log(obj)}
               />
             )
           }

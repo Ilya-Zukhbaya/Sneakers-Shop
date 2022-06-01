@@ -6,7 +6,11 @@ function Card(props) {
 
     const onAddClick = () => {
         setIsAdded(!isAdded);
-    } 
+    }
+    
+    // React.useEffect(() => {
+    //     console.log('Change card')
+    // }, [isAdded])
 
     return (
         <article className={styles.card}>
