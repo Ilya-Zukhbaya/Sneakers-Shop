@@ -5,7 +5,9 @@ import Drawer from './components/Drawer';
 
 
 function App() {
+
   const [items, setItems] = React.useState([])
+  const [cartItems, setCartItems] = React.useState([])
   const [cartOpened, setCartOpened] = React.useState(false);
 
   React.useEffect(() => {
@@ -15,10 +17,15 @@ function App() {
     })
     .then((json) => {setItems(json)})
   }, [])
+
+  const onAddToCard = (obj) => {
+    setCartItems(prev => [...prev, obj]);
+  }
+
   return (
     <div className="wrapper clear">
 
-      {cartOpened && <Drawer onCartClose={() => setCartOpened(false)} />}
+      {cartOpened && <Drawer  cartItems={cartItems} onCartClose={() => setCartOpened(false)} />}
       {/* if Left - true then right must be completed */}
 
       <Header onCartClick={() => setCartOpened(true)} />
@@ -38,6 +45,7 @@ function App() {
                 description={obj.description}
                 price={obj.price}
                 imageUrl={obj.imageUrl}
+                onPlusClick={(obj) => onAddToCard(obj)}
               />
             )
           }
