@@ -1,14 +1,18 @@
 import React from 'react'
+import { Route } from 'react-router-dom';
 import axios from 'axios';
-import Card from './components/Card'
 import Header from './components/Header';
 import Drawer from './components/Drawer';
+
+import Home from './pages/Home';
+import Favorites from './pages/Favorites';
 
 
 function App() {
 
   const [items, setItems] = React.useState([])
   const [cartItems, setCartItems] = React.useState([])
+  const [favoriteItems, setFavortiteItems] = React.useState([])
   const [cartOpened, setCartOpened] = React.useState(false);
   const [searchDescription, setSearchDescription] = React.useState('')
 
@@ -18,6 +22,9 @@ function App() {
     })
     axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/cart').then(response => {
       setCartItems(response.data)
+    })
+    axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/favorite').then(response => {
+      setFavortiteItems(response.data)
     })
   }, [])
 
@@ -32,7 +39,22 @@ function App() {
 
   const onRemoveItem = (id) => {
     axios.delete(`https://62977d3a14e756fe3b3153c8.mockapi.io/cart/${id}`)
-    setCartItems((prev) => {prev.filter(item => item.id !== id)})
+    setCartItems((prev) => { prev.filter(item => item.id !== id) })
+  }
+
+  const onAddToFavorite = async (obj) => {
+    try {
+      if (favoriteItems.find((fav) => fav.id === obj.id)){
+        axios.delete(`https://62977d3a14e756fe3b3153c8.mockapi.io/favorite/${obj.id}`)
+      }
+      else {
+        const { data }= await axios.post('https://62977d3a14e756fe3b3153c8.mockapi.io/favorite', obj);
+        setFavortiteItems((prev) => [...prev, data])
+      }
+    }
+    catch(err){
+      alert(err)
+    }
   }
 
   return (
@@ -43,30 +65,19 @@ function App() {
 
       <Header onCartClick={() => setCartOpened(true)} />
 
-      <div className="main-content p-40">
-        <div className="d-flex align-center justify-between mb-40">
-          <h1>{searchDescription ? `Поиск по запросу: ${searchDescription}` : 'Все кроссовки'}</h1>
-          <div className="search-container">
-            <img src='/images/search.svg' alt='Search' width={14} height={14}></img>
-            <input placeholder="Search ..." onChange={onChangeSearchInput} value={searchDescription}></input>
-          </div>
-        </div>
-        <article className="sneakers-container d-flex flex-wrap justify-between">
-          {
-            items
-              .filter(obj => obj.description.toLowerCase().includes(searchDescription.toLowerCase()))
-              .map((obj, index) =>
-                <Card
-                  key={index}
-                  description={obj.description}
-                  price={obj.price}
-                  imageUrl={obj.imageUrl}
-                  onPlusClick={(obj) => onAddToCard(obj)}
-                />
-              )
-          }
-        </article>
-      </div>
+      <Route path="/" exact>
+        <Home
+          items={items}
+          searchDescription={searchDescription}
+          onChangeSearchInput={onChangeSearchInput}
+          onAddToCard={onAddToCard}
+          onAddToFavorite={onAddToFavorite}
+        />
+      </Route>
+
+      <Route path="/favorites" exact>
+        <Favorites items={favoriteItems} onAddToFavorite={onAddToFavorite} />
+      </Route>
 
     </div>
   );
