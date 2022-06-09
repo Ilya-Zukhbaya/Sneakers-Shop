@@ -1,6 +1,6 @@
 import Card from '../components/Card'
 
-function Home({items, searchDescription, onChangeSearchInput, onAddToCard, onAddToFavorite}) {
+function Home({items, searchDescription, onChangeSearchInput, onAddToCard, onAddToFavorite, cartItems}) {
     return (
         <div className="main-content p-40">
             <div className="d-flex align-center justify-between mb-40">
@@ -13,16 +13,17 @@ function Home({items, searchDescription, onChangeSearchInput, onAddToCard, onAdd
             <article className="sneakers-container d-flex flex-wrap justify-between">
                 {
                     items
-                        .filter(obj => obj.description.toLowerCase().includes(searchDescription.toLowerCase()))
-                        .map((obj, index) =>
+                        .filter(item => item.description.toLowerCase().includes(searchDescription.toLowerCase()))
+                        .map((item, index) =>
                             <Card
                                 key={index}
-                                description={obj.description}
-                                price={obj.price}
-                                imageUrl={obj.imageUrl}
+                                description={item.description}
+                                price={item.price}
+                                imageUrl={item.imageUrl}
                                 onPlusClick={(obj) => onAddToCard(obj)}
                                 onFavoriteAdd={(obj) => onAddToFavorite(obj)}
-                                id = {obj.id}
+                                added={cartItems.some((obj) => obj.id === item.id)}
+                                id = {item.id}
                             />
                         )
                 }

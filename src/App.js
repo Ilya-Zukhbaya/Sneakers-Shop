@@ -17,20 +17,32 @@ function App() {
   const [searchDescription, setSearchDescription] = React.useState('')
 
   React.useEffect(() => {
-    axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/items').then(response => {
-      setItems(response.data)
-    })
-    axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/cart').then(response => {
-      setCartItems(response.data)
-    })
-    axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/favorite').then(response => {
-      setFavortiteItems(response.data)
-    })
-  }, [])
+    async function fetchData(){
+      const cartItemsResponse = await axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/cart')
+      const favoriteItemsResponse = await axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/favorite')
+      const itemsResponse = await axios.get ('https://62977d3a14e756fe3b3153c8.mockapi.io/items')
+
+      setItems(itemsResponse.data);
+      setCartItems(cartItemsResponse.data);
+      setFavortiteItems(favoriteItemsResponse.data);
+    }
+
+    fetchData()
+  }, []);
 
   const onAddToCard = (obj) => {
-    axios.post('https://62977d3a14e756fe3b3153c8.mockapi.io/cart', obj)
-    setCartItems(prev => [...prev, obj]);
+    try {
+      if (cartItems.find((cartItem) => Number(cartItem.id) === Number(obj.id))) {
+        setCartItems(prev => prev.filter(item => Number(item.id) !== Number(obj.id)))
+        axios.delete(`https://62977d3a14e756fe3b3153c8.mockapi.io/cart/${obj.id}`)
+      }
+      else {
+        axios.post('https://62977d3a14e756fe3b3153c8.mockapi.io/cart', obj)
+        setCartItems((prev) => [...prev, obj])
+      }
+    } catch (error) {
+      alert(error)
+    }
   }
 
   const onChangeSearchInput = (obj) => {
@@ -39,7 +51,7 @@ function App() {
 
   const onRemoveItem = (id) => {
     axios.delete(`https://62977d3a14e756fe3b3153c8.mockapi.io/cart/${id}`)
-    setCartItems((prev) => { prev.filter(item => item.id !== id) })
+    setCartItems((prev) => prev.filter(item => item.id !== id) )
   }
 
   const onAddToFavorite = async (obj) => {
@@ -68,6 +80,7 @@ function App() {
       <Route path="/" exact>
         <Home
           items={items}
+          cartItems={cartItems}
           searchDescription={searchDescription}
           onChangeSearchInput={onChangeSearchInput}
           onAddToCard={onAddToCard}
