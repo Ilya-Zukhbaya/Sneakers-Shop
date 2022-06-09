@@ -10,24 +10,26 @@ import Favorites from './pages/Favorites';
 
 function App() {
 
-  const [items, setItems] = React.useState([])
-  const [cartItems, setCartItems] = React.useState([])
-  const [favoriteItems, setFavortiteItems] = React.useState([])
+  const [items, setItems] = React.useState([]);
+  const [cartItems, setCartItems] = React.useState([]);
+  const [favoriteItems, setFavortiteItems] = React.useState([]);
   const [cartOpened, setCartOpened] = React.useState(false);
-  const [searchDescription, setSearchDescription] = React.useState('')
+  const [searchDescription, setSearchDescription] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function fetchData(){
-      const cartItemsResponse = await axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/cart')
-      const favoriteItemsResponse = await axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/favorite')
-      const itemsResponse = await axios.get ('https://62977d3a14e756fe3b3153c8.mockapi.io/items')
+      const cartItemsResponse = await axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/cart');
+      const favoriteItemsResponse = await axios.get('https://62977d3a14e756fe3b3153c8.mockapi.io/favorite');
+      const itemsResponse = await axios.get ('https://62977d3a14e756fe3b3153c8.mockapi.io/items');
 
-      setItems(itemsResponse.data);
+      setIsLoading(false);
       setCartItems(cartItemsResponse.data);
       setFavortiteItems(favoriteItemsResponse.data);
+      setItems(itemsResponse.data);
     }
 
-    fetchData()
+    fetchData();
   }, []);
 
   const onAddToCard = (obj) => {
@@ -85,6 +87,7 @@ function App() {
           onChangeSearchInput={onChangeSearchInput}
           onAddToCard={onAddToCard}
           onAddToFavorite={onAddToFavorite}
+          isLoading={isLoading}
         />
       </Route>
 

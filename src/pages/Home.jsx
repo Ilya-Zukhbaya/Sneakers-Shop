@@ -1,6 +1,25 @@
 import Card from '../components/Card'
 
-function Home({items, searchDescription, onChangeSearchInput, onAddToCard, onAddToFavorite, cartItems}) {
+function Home({ items, searchDescription, onChangeSearchInput, onAddToCard, onAddToFavorite, cartItems, isLoading }) {
+
+    const renderItems = (() => {
+        const filtredItems = 
+        items.filter((item) => item.description.toLowerCase().includes(searchDescription.toLowerCase()),
+        );
+        return (isLoading
+            ? [...Array(12)]
+            : filtredItems).map((item, index) => (
+                <Card
+                    key={index}
+                    onPlusClick={(obj) => onAddToCard(obj)}
+                    onFavoriteAdd={(obj) => onAddToFavorite(obj)}
+                    added={cartItems.some((obj) => Number(obj.id) === Number(item.id))}
+                    isLoading={isLoading}
+                    {...item}
+                />
+            ))
+    })
+
     return (
         <div className="main-content p-40">
             <div className="d-flex align-center justify-between mb-40">
@@ -12,20 +31,7 @@ function Home({items, searchDescription, onChangeSearchInput, onAddToCard, onAdd
             </div>
             <article className="sneakers-container d-flex flex-wrap justify-between">
                 {
-                    items
-                        .filter(item => item.description.toLowerCase().includes(searchDescription.toLowerCase()))
-                        .map((item, index) =>
-                            <Card
-                                key={index}
-                                description={item.description}
-                                price={item.price}
-                                imageUrl={item.imageUrl}
-                                onPlusClick={(obj) => onAddToCard(obj)}
-                                onFavoriteAdd={(obj) => onAddToFavorite(obj)}
-                                added={cartItems.some((obj) => obj.id === item.id)}
-                                id = {item.id}
-                            />
-                        )
+                    renderItems()
                 }
             </article>
         </div>
